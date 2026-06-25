@@ -172,3 +172,4 @@ wandb sync wandb/offline-run-*
 A previsão diária de perguntas ajuda a estimar demanda de moderação, suporte técnico, curadoria de conteúdo e monitoramento de interesse por tecnologias. A série apresenta variação semanal e flutuações naturais de volume, o que justifica o uso de atributos defasados, médias móveis e sazonalidade curta.
 
 Como próximos passos, recomenda-se atualizar a coleta periodicamente, reexecutar o notebook com novas janelas, comparar novamente o leaderboard antes de trocar o modelo campeão e investigar dias extremos antes de remover ou suavizar observações.
+
