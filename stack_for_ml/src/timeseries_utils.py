@@ -1,21 +1,12 @@
-"""Reusable helpers for the Stack Overflow time-series assignment.
-
-The functions here are intentionally small and notebook-friendly: they keep the
-report reproducible while leaving the narrative and plots in the notebook.
-"""
-
-from __future__ import annotations
-
 import os
 import tempfile
-from dataclasses import dataclass
 import json
 import re
-from pathlib import Path
-from typing import Iterable
-
 import numpy as np
 import pandas as pd
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Iterable
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
@@ -42,8 +33,6 @@ DEFAULT_FEATURES = [
 
 @dataclass(frozen=True)
 class ForecastResult:
-    """Standard container for forecasts used in comparisons."""
-
     name: str
     y_pred: pd.Series
     metrics: dict[str, float]
@@ -51,20 +40,15 @@ class ForecastResult:
 
 
 def load_questions(csv_path: str | Path) -> pd.DataFrame:
-    """Load the Stack Overflow ML dataset with parsed datetimes."""
-
     df = pd.read_csv(csv_path)
     df["creation_date"] = pd.to_datetime(df["creation_date"], errors="coerce")
     if "last_activity_date" in df.columns:
-        df["last_activity_date"] = pd.to_datetime(
-            df["last_activity_date"], errors="coerce"
-        )
+        df["last_activity_date"] = pd.to_datetime(df["last_activity_date"], errors="coerce")
+
     return df
 
 
 def build_daily_series(df: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate question rows into a complete daily time series."""
-
     if df["creation_date"].isna().any():
         raise ValueError("creation_date contains invalid timestamps.")
 
@@ -79,12 +63,11 @@ def build_daily_series(df: pd.DataFrame) -> pd.DataFrame:
     full_index = pd.date_range(daily.index.min(), daily.index.max(), freq="D")
     daily = daily.reindex(full_index)
     daily.index.name = "date"
+
     return daily
 
 
 def quality_diagnostic(raw_df: pd.DataFrame, daily: pd.DataFrame) -> pd.DataFrame:
-    """Build the quality diagnostic required by the assignment."""
-
     complete_index = pd.date_range(daily.index.min(), daily.index.max(), freq="D")
     missing_dates = complete_index.difference(daily.dropna().index)
 
@@ -122,8 +105,6 @@ def quality_diagnostic(raw_df: pd.DataFrame, daily: pd.DataFrame) -> pd.DataFram
 
 
 def add_time_features(daily: pd.DataFrame) -> pd.DataFrame:
-    """Create lags, rolling means and cyclic calendar features."""
-
     df = daily.copy()
     df["lag1"] = df[TARGET].shift(1)
     df["lag7"] = df[TARGET].shift(7)
@@ -143,15 +124,11 @@ def add_time_features(daily: pd.DataFrame) -> pd.DataFrame:
 
 
 def temporal_split(df: pd.DataFrame, train_size: float = 0.8) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Split a time-series frame without shuffling."""
-
     split_idx = int(len(df) * train_size)
     return df.iloc[:split_idx].copy(), df.iloc[split_idx:].copy()
 
 
 def regression_metrics(y_true: Iterable[float], y_pred: Iterable[float]) -> dict[str, float]:
-    """Compute MAE, RMSE and MAPE for positive-count series."""
-
     y_true_s = pd.Series(y_true, dtype=float)
     y_pred_s = pd.Series(y_pred, dtype=float)
     mae = mean_absolute_error(y_true_s, y_pred_s)
@@ -164,8 +141,6 @@ def regression_metrics(y_true: Iterable[float], y_pred: Iterable[float]) -> dict
 
 
 def baseline_persistence(train: pd.Series, test: pd.Series) -> ForecastResult:
-    """Naive baseline: each day repeats the previous observed value."""
-
     history = pd.concat([train.iloc[[-1]], test.iloc[:-1]])
     pred = pd.Series(history.to_numpy(), index=test.index, name="baseline_persistencia")
     return ForecastResult(
@@ -177,14 +152,14 @@ def baseline_persistence(train: pd.Series, test: pd.Series) -> ForecastResult:
 
 
 def baseline_moving_average(train: pd.Series, test: pd.Series, window: int = 7) -> ForecastResult:
-    """Rolling mean baseline with recursive updates from observed test values."""
-
     history = list(train.astype(float).to_numpy())
     predictions = []
+
     for actual in test.astype(float).to_numpy():
         predictions.append(float(np.mean(history[-window:])))
         history.append(actual)
     pred = pd.Series(predictions, index=test.index, name=f"baseline_media_movel_{window}")
+
     return ForecastResult(
         name=f"baseline_media_movel_{window}",
         y_pred=pred,
@@ -199,7 +174,6 @@ def fit_sarimax_grid(
     orders: list[tuple[int, int, int]] | None = None,
     seasonal_orders: list[tuple[int, int, int, int]] | None = None,
 ) -> tuple[ForecastResult, pd.DataFrame, object]:
-    """Fit a compact SARIMAX grid and return the lowest-AIC model."""
 
     if orders is None:
         orders = [(0, 0, 1), (1, 0, 0), (1, 0, 1), (2, 0, 1), (1, 1, 1), (2, 1, 1)]
@@ -254,8 +228,6 @@ def fit_sarimax_grid(
 
 
 def fit_exponential_smoothing(train: pd.Series, test: pd.Series) -> tuple[ForecastResult, object]:
-    """Fit Holt-Winters with weekly seasonality, falling back to Holt if needed."""
-
     params: dict[str, object]
     try:
         model = ExponentialSmoothing(
@@ -276,10 +248,7 @@ def fit_exponential_smoothing(train: pd.Series, test: pd.Series) -> tuple[Foreca
 
     pred = fit.forecast(len(test))
     pred.index = test.index
-    return (
-        ForecastResult(name=name, y_pred=pred.rename(name), metrics=regression_metrics(test, pred), params=params),
-        fit,
-    )
+    return (ForecastResult(name=name, y_pred=pred.rename(name), metrics=regression_metrics(test, pred), params=params), fit,)
 
 
 def fit_ml_model(
@@ -288,7 +257,6 @@ def fit_ml_model(
     features: list[str] | None = None,
     complex_model: bool = False,
 ) -> tuple[ForecastResult, object, dict[str, float]]:
-    """Fit a tabular ML model for the engineered time-series features."""
 
     if features is None:
         features = DEFAULT_FEATURES
@@ -327,12 +295,11 @@ def fit_ml_model(
         "mae_treino": regression_metrics(y_train, train_pred)["mae_teste"],
         "rmse_treino": regression_metrics(y_train, train_pred)["rmse_teste"],
     }
+
     return ForecastResult(name=name, y_pred=pred, metrics=regression_metrics(y_test, pred), params=params), model, train_metrics
 
 
 def residual_diagnostics(residuals: pd.Series, lags: int = 14) -> pd.DataFrame:
-    """Run Ljung-Box diagnostics for champion residuals."""
-
     return acorr_ljungbox(residuals.dropna(), lags=[min(lags, max(1, len(residuals.dropna()) // 2))], return_df=True)
 
 
@@ -343,14 +310,15 @@ def walk_forward_sarimax(
     initial_window: int = 120,
     step: int = 7,
 ) -> pd.DataFrame:
-    """Walk-forward validation with periodic SARIMAX refits."""
 
     rows = []
     for start in range(initial_window, len(series), step):
         train = series.iloc[:start]
         test = series.iloc[start : start + step]
+
         if len(test) == 0:
             break
+
         model = SARIMAX(
             train,
             order=order,
@@ -358,6 +326,7 @@ def walk_forward_sarimax(
             enforce_stationarity=False,
             enforce_invertibility=False,
         )
+
         fit = model.fit(disp=False)
         pred = fit.get_forecast(steps=len(test)).predicted_mean
         pred.index = test.index
@@ -381,7 +350,6 @@ def log_wandb_run(
     y_pred: pd.Series,
     project: str = "stack-overflow-timeseries-n3",
 ) -> None:
-    """Log one experiment to wandb, defaulting to offline mode."""
 
     os.environ.setdefault("WANDB_MODE", "offline")
     local_wandb_dir = Path(os.environ.get("WANDB_DIR", Path.cwd() / "wandb"))
@@ -396,6 +364,7 @@ def log_wandb_run(
     os.environ.setdefault("TEMP", str(local_tmp_dir))
     os.environ.setdefault("TMPDIR", str(local_tmp_dir))
     tempfile.tempdir = str(local_tmp_dir)
+
     try:
         import wandb
     except ImportError:
@@ -436,6 +405,6 @@ def log_wandb_run(
                 }
             )
             run.log({"previsao_teste": wandb.Table(dataframe=comparison)})
-    except Exception as exc:  # pragma: no cover - environment-dependent fallback.
+    except Exception as exc:
         write_fallback(f"{type(exc).__name__}: {exc}")
         print(f"wandb fallback local para run '{name}'; metricas salvas em wandb/offline-fallback-runs.")
