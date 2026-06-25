@@ -1,0 +1,185 @@
+{
+  "project": "stack-overflow-timeseries-n3",
+  "name": "baseline_persistencia",
+  "metrics": {
+    "mae_teste": 5.588235294117647,
+    "rmse_teste": 7.404291283557441,
+    "mape_teste": 37.728523847567594
+  },
+  "params": {
+    "strategy": "previous_observed_value"
+  },
+  "reason": "PermissionError: [WinError 5] Acesso negado: 'C:\\\\Users\\\\gabri\\\\Documentos\\\\FACULDADE\\\\Stack-Overflow-para-ML\\\\stack_for_ml\\\\notebooks\\\\.tmp_wandb\\\\tmp6h8gg3zk'",
+  "predictions": [
+    {
+      "date": "2026-02-21",
+      "y_true": 17.0,
+      "y_pred": 19.0
+    },
+    {
+      "date": "2026-02-22",
+      "y_true": 16.0,
+      "y_pred": 17.0
+    },
+    {
+      "date": "2026-02-23",
+      "y_true": 18.0,
+      "y_pred": 16.0
+    },
+    {
+      "date": "2026-02-24",
+      "y_true": 22.0,
+      "y_pred": 18.0
+    },
+    {
+      "date": "2026-02-25",
+      "y_true": 18.0,
+      "y_pred": 22.0
+    },
+    {
+      "date": "2026-02-26",
+      "y_true": 16.0,
+      "y_pred": 18.0
+    },
+    {
+      "date": "2026-02-27",
+      "y_true": 24.0,
+      "y_pred": 16.0
+    },
+    {
+      "date": "2026-02-28",
+      "y_true": 8.0,
+      "y_pred": 24.0
+    },
+    {
+      "date": "2026-03-01",
+      "y_true": 14.0,
+      "y_pred": 8.0
+    },
+    {
+      "date": "2026-03-02",
+      "y_true": 18.0,
+      "y_pred": 14.0
+    },
+    {
+      "date": "2026-03-03",
+      "y_true": 19.0,
+      "y_pred": 18.0
+    },
+    {
+      "date": "2026-03-04",
+      "y_true": 23.0,
+      "y_pred": 19.0
+    },
+    {
+      "date": "2026-03-05",
+      "y_true": 16.0,
+      "y_pred": 23.0
+    },
+    {
+      "date": "2026-03-06",
+      "y_true": 18.0,
+      "y_pred": 16.0
+    },
+    {
+      "date": "2026-03-07",
+      "y_true": 14.0,
+      "y_pred": 18.0
+    },
+    {
+      "date": "2026-03-08",
+      "y_true": 9.0,
+      "y_pred": 14.0
+    },
+    {
+      "date": "2026-03-09",
+      "y_true": 22.0,
+      "y_pred": 9.0
+    },
+    {
+      "date": "2026-03-10",
+      "y_true": 19.0,
+      "y_pred": 22.0
+    },
+    {
+      "date": "2026-03-11",
+      "y_true": 17.0,
+      "y_pred": 19.0
+    },
+    {
+      "date": "2026-03-12",
+      "y_true": 16.0,
+      "y_pred": 17.0
+    },
+    {
+      "date": "2026-03-13",
+      "y_true": 12.0,
+      "y_pred": 16.0
+    },
+    {
+      "date": "2026-03-14",
+      "y_true": 19.0,
+      "y_pred": 12.0
+    },
+    {
+      "date": "2026-03-15",
+      "y_true": 19.0,
+      "y_pred": 19.0
+    },
+    {
+      "date": "2026-03-16",
+      "y_true": 24.0,
+      "y_pred": 19.0
+    },
+    {
+      "date": "2026-03-17",
+      "y_true": 14.0,
+      "y_pred": 24.0
+    },
+    {
+      "date": "2026-03-18",
+      "y_true": 29.0,
+      "y_pred": 14.0
+    },
+    {
+      "date": "2026-03-19",
+      "y_true": 28.0,
+      "y_pred": 29.0
+    },
+    {
+      "date": "2026-03-20",
+      "y_true": 27.0,
+      "y_pred": 28.0
+    },
+    {
+      "date": "2026-03-21",
+      "y_true": 12.0,
+      "y_pred": 27.0
+    },
+    {
+      "date": "2026-03-22",
+      "y_true": 5.0,
+      "y_pred": 12.0
+    },
+    {
+      "date": "2026-03-23",
+      "y_true": 23.0,
+      "y_pred": 5.0
+    },
+    {
+      "date": "2026-03-24",
+      "y_true": 27.0,
+      "y_pred": 23.0
+    },
+    {
+      "date": "2026-03-25",
+      "y_true": 28.0,
+      "y_pred": 27.0
+    },
+    {
+      "date": "2026-03-26",
+      "y_true": 17.0,
+      "y_pred": 28.0
+    }
+  ]
+}
